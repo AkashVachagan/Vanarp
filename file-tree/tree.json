@@ -1,0 +1,16 @@
+{
+  "name": "root",
+  "type": "folder",
+  "content": [
+    {
+      "name": "adarsh.py",
+      "type": "file",
+      "file_id": "41f8772c-136f-4b07-8fab-daec55231699"
+    },
+    {
+      "name": "adarsh",
+      "type": "folder",
+      "content": []
+    }
+  ]
+}
