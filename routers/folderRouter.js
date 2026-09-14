@@ -1,12 +1,14 @@
-import express, { raw } from "express";
+import express from "express";
 import fs from "fs";
+import tokenVerification from "../middleware/tokenVerify.js";
 
 const router = express.Router();
 
 // creates a folder
-router.post("/*path", (req, res) => {
+router.post("/*path", tokenVerification, (req, res) => {
     const folderPath = req.params.path;
-    const fileContentString = fs.readFileSync("./file-tree/tree.json", "utf-8");
+    const user_id = req.user_id;
+    const fileContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
     const fileContent = JSON.parse(fileContentString)
     let current = fileContent;
 
@@ -42,7 +44,7 @@ router.post("/*path", (req, res) => {
 
     current.content.push(template);
 
-    fs.writeFileSync("./file-tree/tree.json", JSON.stringify(fileContent, null, 2));
+    fs.writeFileSync(`./file-tree/${user_id}.json`, JSON.stringify(fileContent, null, 2));
 
     console.log("Folder has been created");
     return res.status(201).json({
@@ -51,9 +53,10 @@ router.post("/*path", (req, res) => {
 });
 
 // deletes a folder
-router.delete("/*path", (req, res) => {
+router.delete("/*path", tokenVerification, (req, res) => {
     const folderPath = req.params.path;
-    const fileContentString = fs.readFileSync("./file-tree/tree.json", "utf-8");
+    const user_id = req.user_id;
+    const fileContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
     const fileContent = JSON.parse(fileContentString)
     let current = fileContent;
 
@@ -79,29 +82,30 @@ router.delete("/*path", (req, res) => {
         if (folderObject.content.length === 0){
             const ind = current.content.indexOf(folderObject);
             current.content.splice(ind, 1);
-            fs.writeFileSync("./file-tree/tree.json", JSON.stringify(fileContent, null, 2));
+            fs.writeFileSync(`./file-tree/${user_id}.json`, JSON.stringify(fileContent, null, 2));
             console.log("Folder has been deleted");
 
             return res.status(200).json({
-                error: "Folder has been deleted"
+                message: "Folder has been deleted"
             });
         }
         else{
             console.log("Folder has children. Can't delete folder");
 
             return res.status(400).json({
-                error: "Folder doesn't exist"
+                error: "Folder has children. Can't delete folder"
             });
         }
     }
 });
 
 // renames a folder
-router.patch("/*path", (req, res) => {
+router.patch("/*path", tokenVerification, (req, res) => {
     const folderPath = req.params.path;
-    const fileContentString = fs.readFileSync("./file-tree/tree.json", "utf-8");
-    const fileContent = JSON.parse(fileContentString)
-    let current = fileContent;
+    const user_id = req.user_id;
+    const folderContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
+    const folderContent = JSON.parse(folderContentString)
+    let current = folderContent;
 
     if (!/^[A-Za-z0-9]+$/.test(req.body)){
         console.log("Invalid folder name");
@@ -130,6 +134,7 @@ router.patch("/*path", (req, res) => {
     }
     else{
         folderObject.name = req.body;
+        fs.writeFileSync(`./file-tree/${user_id}.json`, JSON.stringify(folderContent, null, 2));
         return res.status(200).json({
             message: "Folder has been renamed"
         });

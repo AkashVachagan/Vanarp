@@ -1,13 +1,15 @@
 import express from "express";
 import fs from "fs";
 import crypto from "crypto";
+import tokenVerification from "../middleware/tokenVerify.js";
 
 const router = express.Router();
 
 // creates a file
-router.post("/*path", (req, res) => {
+router.post("/*path", tokenVerification, (req, res) => {
     const filePath = req.params.path;
-    const fileContentString = fs.readFileSync("./file-tree/tree.json", "utf-8");
+    const user_id = req.user_id;
+    const fileContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
     const fileContent = JSON.parse(fileContentString);
     let current = fileContent;
 
@@ -47,7 +49,7 @@ router.post("/*path", (req, res) => {
         console.log("File already exists");
         return res.status(409).json({
             error: "File already exists"
-        });
+        }); 
     }
 
     const randomFileID = crypto.randomUUID();
@@ -59,7 +61,7 @@ router.post("/*path", (req, res) => {
     };
 
     current.content.push(template);
-    fs.writeFileSync("./file-tree/tree.json", JSON.stringify(fileContent, null, 2));
+    fs.writeFileSync(`./file-tree/${user_id}.json`, JSON.stringify(fileContent, null, 2));
     fs.writeFileSync(`./codes/${randomFileID}.txt`, "");
 
     console.log("File has been created");
@@ -69,9 +71,10 @@ router.post("/*path", (req, res) => {
 });
 
 // updates contents of the file
-router.put("/*path", (req, res) => {
+router.put("/*path", tokenVerification, (req, res) => {
     const filePath = req.params.path;
-    const fileContentString = fs.readFileSync("./file-tree/tree.json", "utf-8");
+    const user_id = req.user_id;
+    const fileContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
     const fileContent = JSON.parse(fileContentString);
     let current = fileContent;
     const code = req.body;
@@ -102,12 +105,13 @@ router.put("/*path", (req, res) => {
     return res.status(201).json({
         message: "File content has been updated"
     });
-})
+});
 
 // deletes the file
-router.delete("/*path", (req, res) => {
+router.delete("/*path", tokenVerification, (req, res) => {
     const filePath = req.params.path;
-    const fileContentString = fs.readFileSync("./file-tree/tree.json", "utf-8");
+    const user_id = req.user_id;
+    const fileContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
     const fileContent = JSON.parse(fileContentString);
     let current = fileContent;
 
@@ -134,7 +138,7 @@ router.delete("/*path", (req, res) => {
         const fileId = fileObject.file_id;
 
         current.content.splice(ind, 1);
-        fs.writeFileSync("./file-tree/tree.json", JSON.stringify(fileContent, null, 2));
+        fs.writeFileSync(`./file-tree/${user_id}.json`, JSON.stringify(fileContent, null, 2));
         fs.unlinkSync(`./codes/${fileId}.txt`);
     }
 
@@ -145,9 +149,10 @@ router.delete("/*path", (req, res) => {
 })
 
 // renames the file
-router.patch("/*path", (req, res) => {
+router.patch("/*path", tokenVerification, (req, res) => {
     const filePath = req.params.path;
-    const fileContentString = fs.readFileSync("./file-tree/tree.json", "utf-8");
+    const user_id = req.user_id;
+    const fileContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
     const fileContent = JSON.parse(fileContentString);
     let current = fileContent;
 
@@ -193,7 +198,7 @@ router.patch("/*path", (req, res) => {
     }
     else{
         fileObject.name = req.body;
-        fs.writeFileSync("./file-tree/tree.json", JSON.stringify(fileContent, null, 2));
+        fs.writeFileSync(`./file-tree/${user_id}.json`, JSON.stringify(fileContent, null, 2));
     }
 
     console.log("File hash been renamed");
