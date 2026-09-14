@@ -4,6 +4,7 @@ import registerRouter from "./routers/registerRouter.js";
 import fileRouter from "./routers/fileRouter.js";
 import folderRouter from "./routers/folderRouter.js";
 import clearRouter from "./routers/clearRouter.js";
+import aiRouter from "./routers/aiRouter.js";
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use("/user", registerRouter);
 
 app.use("/file", fileRouter);
 
+app.use("/ai", aiRouter);
+
 app.use("/folder", folderRouter);
 
 app.use("/clear", clearRouter);
@@ -23,6 +26,7 @@ app.listen(3000, (req, res) => {
     fs.mkdirSync("./file-tree", {recursive : true});
     fs.mkdirSync("./user", {recursive : true});
     fs.mkdirSync("./jwt", {recursive : true});
+    fs.mkdirSync("./ai-chat-log", {recursive : true});
 
     if (!fs.existsSync("./user/userInfo.json")){
         fs.writeFileSync("./user/userInfo.json", JSON.stringify([], null, 2));

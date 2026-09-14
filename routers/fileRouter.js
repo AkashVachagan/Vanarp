@@ -5,6 +5,41 @@ import tokenVerification from "../middleware/tokenVerify.js";
 
 const router = express.Router();
 
+//get file id
+router.get("/*path", tokenVerification, (req, res) => {
+    const filePath = req.params.path;
+    const user_id = req.user_id;
+    const fileContentString = fs.readFileSync(`./file-tree/${user_id}.json`, "utf-8");
+    const fileContent = JSON.parse(fileContentString);
+    let current = fileContent;
+
+    for (let i = 0; i < filePath.length - 1; i++){
+        current = current.content.find(child => (child.name === filePath[i] && child.type === "folder"));
+        if (!current){
+            console.log("File Path is invalid");
+            return res.status(400).json({
+                error: "File Path is invalid"
+            });
+        }
+    }
+
+    const fileObject = current.content.find(child => (child.name === filePath[filePath.length - 1] && child.type === "file"));
+
+    if (!fileObject){
+        console.log("File doesn't exist");
+        return res.status(404).json({
+            message: "File not found"
+        });
+    }
+    else{
+        console.log("file name and id has been returned");
+        return res.status(201).json({
+            fileName: fileObject.name,
+            file_id: fileObject.file_id
+        });
+    }
+});
+
 // creates a file
 router.post("/*path", tokenVerification, (req, res) => {
     const filePath = req.params.path;
@@ -57,12 +92,12 @@ router.post("/*path", tokenVerification, (req, res) => {
     const template = {
         name: filePath[filePath.length - 1],
         type: "file",
-        file_id: randomFileID
+        file_id: `${user_id}-${randomFileID}`
     };
 
     current.content.push(template);
     fs.writeFileSync(`./file-tree/${user_id}.json`, JSON.stringify(fileContent, null, 2));
-    fs.writeFileSync(`./codes/${randomFileID}.txt`, "");
+    fs.writeFileSync(`./codes/${user_id}-${randomFileID}.txt`, "");
 
     console.log("File has been created");
     return res.status(201).json({
