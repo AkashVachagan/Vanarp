@@ -64,9 +64,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
     const {username, password} = req.body;
     const userListString = fs.readFileSync("./user/userInfo.json", "utf-8");
-    const tokenListString = fs.readFileSync("./jwt/token.json", "utf-8");
     const userList = JSON.parse(userListString);
-    const tokenList = JSON.parse(tokenListString);
     const randomToken = crypto.randomUUID();
 
     const userInfo = userList.find(child => child.name === username);
@@ -87,16 +85,10 @@ router.post("/login", async (req, res) => {
     }
 
     const user_id = userInfo.user_id;
-    const jwt = tokenList.find(child => child.user_id = user_id);
-    if (!jwt){
-        console.log("user jwt not available");
-        return res.status(500).json({
-            error: "user jwt not available"
-        });
-    }
-
-    jwt.token = randomToken;
-    jwt.expiresAt = Date.now() + THIRTY_MINUTES;
+    // Keep independent tokens for concurrent browser tabs/devices.
+    const tokenList = JSON.parse(fs.readFileSync("./jwt/token.json", "utf-8"))
+        .filter(child => child.expiresAt > Date.now());
+    tokenList.push({ user_id, token: randomToken, expiresAt: Date.now() + THIRTY_MINUTES });
 
     fs.writeFileSync("./jwt/token.json", JSON.stringify(tokenList, null, 2));
 

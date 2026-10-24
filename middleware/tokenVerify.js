@@ -11,18 +11,19 @@ const tokenVerification = (req, res, next) => {
         });
     }
 
-    const token = tokenBearer.split(" ")[1];
+    const [scheme, token] = tokenBearer.split(" ");
+    if (scheme !== "Bearer" || !token) return res.status(401).json({ error: "invalid authorization header" });
     const jwt = tokenList.find(child => child.token === token);
     if (!jwt){
         console.log("token invalid");
-        res.status(401).json({
+        return res.status(401).json({
             error: "token invalid"
         });
     }
 
     if (Date.now() > jwt.expiresAt){
         console.log("token expired, relogin");
-        res.status(403).json({
+        return res.status(403).json({
             error: "token expired"
         });
     }

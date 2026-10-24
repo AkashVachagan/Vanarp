@@ -5,6 +5,13 @@ import tokenVerification from "../middleware/tokenVerify.js";
 
 const router = express.Router();
 
+// Returns the authenticated user's complete file tree.
+router.get("/tree", tokenVerification, (req, res) => {
+    const treePath = `./file-tree/${req.user_id}.json`;
+    if (!fs.existsSync(treePath)) return res.status(404).json({ error: "File tree not found" });
+    return res.status(200).json(JSON.parse(fs.readFileSync(treePath, "utf-8")));
+});
+
 //get file id
 router.get("/*path", tokenVerification, (req, res) => {
     const filePath = req.params.path;
@@ -35,7 +42,8 @@ router.get("/*path", tokenVerification, (req, res) => {
         console.log("file name and id has been returned");
         return res.status(201).json({
             fileName: fileObject.name,
-            file_id: fileObject.file_id
+            file_id: fileObject.file_id,
+            content: fs.readFileSync(`./codes/${fileObject.file_id}.txt`, "utf-8")
         });
     }
 });
