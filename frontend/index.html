@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>gcode — workspace</title>
+  <link rel="stylesheet" href="/styles.css?v=4" />
+</head>
+<body>
+  <main id="auth" class="auth-shell">
+    <section class="auth-card">
+      <div class="brand"><span class="brand-mark">g</span><span>gcode</span></div>
+      <p class="eyebrow">YOUR PERSONAL WORKSPACE</p>
+      <h1 id="auth-title">Welcome back.</h1>
+      <p class="auth-subtitle">Sign in to pick up where you left off.</p>
+      <form id="auth-form">
+        <label>Username<input id="username" autocomplete="username" required placeholder="your name" /></label>
+        <label>Password<input id="password" type="password" autocomplete="current-password" required placeholder="••••••••" /></label>
+        <button class="primary full" type="submit" id="auth-submit">Sign in <span>↗</span></button>
+      </form>
+      <p class="auth-switch"><span id="auth-switch-copy">New to gcode?</span> <button id="mode-toggle" class="text-button">Create account</button></p>
+      <p id="auth-error" class="error" role="alert"></p>
+    </section>
+    <div class="auth-note">A quiet place to make things.</div>
+  </main>
+
+  <div id="app" class="app-shell hidden">
+    <header class="topbar">
+      <div class="top-brand"><span class="brand-mark">g</span><span>gcode</span><span class="brand-divider">/</span><button id="session-code" class="workspace-label" title="Workspace">workspace</button></div>
+      <div id="session-controls" class="session-controls"><button id="create-session" class="session-button">Create session</button><button id="join-session" class="session-button">Join session</button><button id="session-chat-button" class="session-button hidden">Chat</button><button id="video-call-button" class="session-button hidden">Video call</button><button id="send-code-button" class="session-button hidden">Send code</button><button id="received-code-button" class="session-button hidden">Code sent</button><button id="leave-session" class="session-button subtle hidden">Leave</button><button id="push-git-button" class="session-button">Push to git</button><button id="open-git-button" class="session-button">Git</button></div>
+      <div class="top-actions"><span class="save-state" id="save-state"><i></i> All changes saved</span><button id="ai-toggle" class="ai-button"><span class="sparkle">✳</span> Ask AI <kbd>⌘ K</kbd></button><button id="logout" class="icon-button" title="Sign out" aria-label="Sign out">↪</button></div>
+    </header>
+    <div class="workspace">
+      <aside class="sidebar">
+        <div class="side-heading"><span>EXPLORER</span><div class="side-tools"><button id="new-file" title="New file">＋<small>file</small></button><button id="new-folder" title="New folder">▱<small>folder</small></button><button id="refresh-tree" title="Refresh">↻</button></div></div>
+        <div class="project-label"><span class="chevron">⌄</span><span id="project-name">PROJECT</span></div>
+        <nav id="file-tree" class="file-tree" aria-label="Files"></nav>
+        <div class="sidebar-foot"><span class="status-dot"></span> Connected to local workspace</div>
+      </aside>
+      <section class="editor-area">
+        <div id="welcome" class="welcome"><div class="welcome-icon">⌘</div><p class="eyebrow">YOUR WORKSPACE</p><h2>Make something<br><em>worth keeping.</em></h2><p>Choose a file from the explorer to get started.</p><div class="shortcuts"><span><kbd>⌘</kbd> <kbd>S</kbd> Save</span><span><kbd>⌘</kbd> <kbd>K</kbd> Ask AI</span></div></div>
+        <div id="editor-view" class="editor-view hidden">
+          <div class="tabbar"><div id="tabs" class="tabs"></div><div class="tab-spacer"></div><button class="output-toggle" id="output-toggle" title="Toggle output panel">▤ Output</button><button class="run-button" id="run-button" title="Run current file">▶ <span>Run</span></button><button class="tab-action" id="save-button" title="Save (Ctrl+S)">↧</button></div>
+          <div class="editor-container"><div id="line-numbers" class="line-numbers">1</div><textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Code editor" placeholder="Start writing your code…"></textarea></div>
+          <footer class="editor-status"><span id="language-status">Plain Text</span><span>UTF-8</span><span>LF</span><span id="cursor-status">Ln 1, Col 1</span></footer>
+        </div>
+        <section id="output-panel" class="output-panel hidden" aria-label="Run output">
+          <div class="output-heading"><div class="output-tabs"><span class="output-tab-active">OUTPUT</span></div><button id="close-output" class="icon-button" title="Close output">×</button></div>
+          <div class="output-content"><div class="output-title"><span id="output-file">Run output</span><span id="output-status"></span></div><pre id="output-text">Run a file to see its output here.</pre></div>
+        </section>
+      </section>
+      <aside id="ai-panel" class="ai-panel">
+        <div class="ai-header"><div><div class="ai-title"><span class="sparkle">✳</span> AI assistant</div><p>Bring your code, ask anything.</p></div><button id="close-ai" class="icon-button" aria-label="Close AI panel">×</button></div>
+        <div class="context-section"><div class="section-label"><span>INCLUDE FILES</span><span id="selected-count">0 selected</span></div><div id="context-files" class="context-files"><div class="empty-files">Your project files will appear here.</div></div></div>
+        <div id="chat-messages" class="chat-messages"><div class="assistant-message"><span class="message-avatar">✳</span><div><strong>Hi there.</strong><p>Select files above for context, then ask me about your code.</p></div></div></div>
+        <form id="chat-form" class="chat-composer"><textarea id="chat-query" rows="3" placeholder="Ask a question…" required></textarea><div class="composer-bottom"><span>↵ to send</span><button type="submit" id="send-chat" aria-label="Send message">↑</button></div></form>
+      </aside>
+    </div>
+  </div>
+  <div id="session-chat-modal" class="modal-overlay hidden">
+    <section class="modal-card session-chat-card"><header class="modal-header"><div><h2>Session chat</h2><p id="session-members-label">Session members</p></div><button class="modal-close" data-close-modal="session-chat-modal">×</button></header><div id="session-chat-messages" class="session-chat-messages"></div><form id="session-chat-form" class="modal-composer"><input id="session-chat-input" maxlength="4000" autocomplete="off" placeholder="Message everyone in this session…" required><button type="submit">Send</button></form></section>
+  </div>
+  <div id="video-call-modal" class="modal-overlay hidden">
+    <section class="modal-card video-call-card"><header class="modal-header"><div><h2>Session video call</h2><p>Everyone in this session can join from the Video call button.</p></div><button id="close-video-call" class="modal-close">×</button></header><div id="jitsi-container" class="jitsi-container"></div></section>
+  </div>
+  <div id="send-code-modal" class="modal-overlay hidden">
+    <section class="modal-card"><header class="modal-header"><div><h2>Send code</h2><p>Choose recipients and files to share.</p></div><button class="modal-close" data-close-modal="send-code-modal">×</button></header><div class="share-picker"><section><h3>PEOPLE</h3><div id="session-recipient-list"></div></section><section><h3>YOUR FILES</h3><div id="session-file-list"></div></section></div><footer class="modal-footer"><span id="share-status"></span><button id="confirm-send-code" class="modal-primary">Send selected code</button></footer></section>
+  </div>
+  <div id="received-code-modal" class="modal-overlay hidden">
+    <section class="modal-card received-card"><header class="modal-header"><div><h2>Received code</h2><p>Code shared with you in this session.</p></div><button class="modal-close" data-close-modal="received-code-modal">×</button></header><div id="received-code-list" class="received-code-list"></div></section>
+  </div>
+  <div id="git-library-modal" class="modal-overlay hidden">
+    <section class="modal-card git-library-card"><header class="modal-header"><div><h2>Git snapshots</h2><p>Private by default. Share a snapshot with people in your current session.</p></div><button class="modal-close" data-close-modal="git-library-modal">×</button></header><div id="git-snapshot-list" class="git-snapshot-list"></div></section>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/app.js?v=4" type="module"></script>
+</body>
+</html>
