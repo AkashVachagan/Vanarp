@@ -1,0 +1,39 @@
+this is a temporary .txt file with curl commands for testing endpoints while in prod - remove later
+
+user registration & login
+- curl -X POST http://localhost:3000/user/register -H "Content-Type: application/json" -d '{"username": "adarsh", "password": "adarsh"}'
+    should store in userInfo, should create user_id.json in file-tree, should create jwt in jwt/token.json and return jwt in res
+    - curl -X POST http://localhost:3000/user/register -H "Content-Type: application/json" -d '{"username": "akash", "password": "akash"}'
+    - curl -X POST http://localhost:3000/user/register -H "Content-Type: application/json" -d '{"username": "pranav", "password": "pranav"}'
+    - curl -X POST http://localhost:3000/user/register -H "Content-Type: application/json" -d '{"username": "adarsh", "password": "adarsh"}'
+    - 
+- curl -X POST http://localhost:3000/user/login -H "Content-Type: application/json" -d '{"username": "adarsh", "password": "adarsh"}'
+    should compare username and password in userInfo and return jwt in res
+    - curl -X POST http://localhost:3000/user/login -H "Content-Type: application/json" -d '{"username": "akash", "password": "akash"}'
+    - curl -X POST http://localhost:3000/user/login -H "Content-Type: application/json" -d '{"username": "adarsh", "password": "akash"}'
+
+file
+- curl -X GET http://localhost:3000/file/adarsh.py -H "Authorization: Bearer ad52aa1c-9fa0-4b25-b3bc-8bb5408cf950"
+- curl -X POST http://localhost:3000/file/adarsh.py -H "Authorization: Bearer ad52aa1c-9fa0-4b25-b3bc-8bb5408cf950"
+    - curl -X POST http://localhost:3000/file/adarsh.ioge.oinge -H "Authorization: Bearer f9afc278-3c0d-4365-9c9d-d016039e4921" -> invalid file name
+    - curl -X POST http://localhost:3000/file/temp/adarsh.py -H "Authorization: Bearer f9afc278-3c0d-4365-9c9d-d016039e4921"
+    - curl -X POST http://localhost:3000/file/adarsh.py -H "Authorization: Bearer a390e9d0-585b-4c49-a79e-fa2384c65997"
+- curl -X PUT http://localhost:3000/file/adarsh.py -H "Authorization: Bearer a390e9d0-585b-4c49-a79e-fa2384c65997" -H "Content-Type: text/plain" -d "print('hello world')"
+- curl -X PATCH http://localhost:3000/file/adarsh.py -H "Authorization: Bearer a390e9d0-585b-4c49-a79e-fa2384c65997" -H "Content-Type: text/plain" -d "akash.py"
+- curl -X DELETE http://localhost:3000/file/akash.py -H "Authorization: Bearer a390e9d0-585b-4c49-a79e-fa2384c65997"
+
+folder
+- curl -X POST http://localhost:3000/folder/temp -H "Authorization: Bearer f9afc278-3c0d-4365-9c9d-d016039e4921"
+- curl -X PATCH http://localhost:3000/folder/temp -H "Authorization: Bearer f9afc278-3c0d-4365-9c9d-d016039e4921" -H "Content-Type: text/plain" -d "perm"
+- curl -X DELETE http://localhost:3000/folder/perm -H "Authorization: Bearer f9afc278-3c0d-4365-9c9d-d016039e4921"
+
+clear all
+- curl -X PUT http://localhost:3000/clear
+
+ai
+- curl -X POST http://localhost:3000/ai/createChatLog -H "Authorization: Bearer ad52aa1c-9fa0-4b25-b3bc-8bb5408cf950"
+- curl -X POST http://localhost:3000/ai/chat -H "Authorization: Bearer 5bf398d2-50bf-42d6-b284-886ed755f801" -H "Content-Type: application/json" -d '{"chat_id": "af5fdc97-9a50-4389-be82-c7674d52632a", "file_ids": [{"fileName":"adarsh.py","file_id":"170b62ee-cc40-440d-9e2a-ac30c4cc42c5-68e0e8f8-a987-4f44-8ff9-5f1d4ca5a15d"}, {"fileName":"akash.py","file_id":"170b62ee-cc40-440d-9e2a-ac30c4cc42c5-de25ae69-5fad-42a5-a7c3-d8c2a386b51e"}], "query": "explain the code in these 2 files"}'
+- curl -X POST http://localhost:3000/ai/chat -H "Authorization: Bearer 5bf398d2-50bf-42d6-b284-886ed755f801" -H "Content-Type: application/json" -d '{"chat_id": "af5fdc97-9a50-4389-be82-c7674d52632a", "file_ids": [], "query": "what did i ask before this"}'
+
+
+
