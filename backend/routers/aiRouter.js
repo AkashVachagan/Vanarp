@@ -62,14 +62,21 @@ router.post("/chat", tokenVerification, async (req, res) => {
     };
 
 
-    const response = await fetch("http://localhost:11434/api/chat", {
+    const response = await fetch("http://localhost:1234/v1/chat/completions", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify(template)
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            model: "qwen2.5-coder-3b-instruct-mlx",
+            messages: template.messages,
+            stream: false,
+            temperature: 0.7
+        })
     });
-
+    
     const data = await response.json();
-    const aiResponse = data.message.content;
+    const aiResponse = data.choices[0].message.content;
 
     // user query
     chatLog.push({

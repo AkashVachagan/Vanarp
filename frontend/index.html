@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>gcode — workspace</title>
+  <title>vanarp — workspace</title>
   <link rel="stylesheet" href="/styles.css?v=4" />
 </head>
 <body>
   <main id="auth" class="auth-shell">
     <section class="auth-card">
-      <div class="brand"><span class="brand-mark">g</span><span>gcode</span></div>
+      <div class="brand"><span class="brand-mark">g</span><span>vanarp</span></div>
       <p class="eyebrow">YOUR PERSONAL WORKSPACE</p>
       <h1 id="auth-title">Welcome back.</h1>
       <p class="auth-subtitle">Sign in to pick up where you left off.</p>
@@ -18,7 +18,7 @@
         <label>Password<input id="password" type="password" autocomplete="current-password" required placeholder="••••••••" /></label>
         <button class="primary full" type="submit" id="auth-submit">Sign in <span>↗</span></button>
       </form>
-      <p class="auth-switch"><span id="auth-switch-copy">New to gcode?</span> <button id="mode-toggle" class="text-button">Create account</button></p>
+      <p class="auth-switch"><span id="auth-switch-copy">New to vanarp?</span> <button id="mode-toggle" class="text-button">Create account</button></p>
       <p id="auth-error" class="error" role="alert"></p>
     </section>
     <div class="auth-note">A quiet place to make things.</div>
@@ -26,7 +26,7 @@
 
   <div id="app" class="app-shell hidden">
     <header class="topbar">
-      <div class="top-brand"><span class="brand-mark">g</span><span>gcode</span><span class="brand-divider">/</span><button id="session-code" class="workspace-label" title="Workspace">workspace</button></div>
+      <div class="top-brand"><span class="brand-mark">g</span><span>vanarp</span><span class="brand-divider">/</span><button id="session-code" class="workspace-label" title="Workspace">workspace</button></div>
       <div id="session-controls" class="session-controls"><button id="create-session" class="session-button">Create session</button><button id="join-session" class="session-button">Join session</button><button id="session-chat-button" class="session-button hidden">Chat</button><button id="video-call-button" class="session-button hidden">Video call</button><button id="send-code-button" class="session-button hidden">Send code</button><button id="received-code-button" class="session-button hidden">Code sent</button><button id="leave-session" class="session-button subtle hidden">Leave</button><button id="push-git-button" class="session-button">Push to git</button><button id="open-git-button" class="session-button">Git</button></div>
       <div class="top-actions"><span class="save-state" id="save-state"><i></i> All changes saved</span><button id="ai-toggle" class="ai-button"><span class="sparkle">✳</span> Ask AI <kbd>⌘ K</kbd></button><button id="logout" class="icon-button" title="Sign out" aria-label="Sign out">↪</button></div>
     </header>
